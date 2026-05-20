@@ -1,3 +1,4 @@
+import '../css/app.css';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import axios from 'axios';
@@ -16,27 +17,20 @@ for (const [key, value] of Object.entries(window.LogViewer.headers || {})) {
   axios.defaults.headers.common[key] = value;
 }
 
-window.LogViewer.basePath = '/' + window.LogViewer.host;
+const routePath = window.LogViewer.path;
+const isRoot = routePath === '' || routePath === '/';
 
-if (! window.location.pathname.startsWith(window.LogViewer.basePath)) {
-  window.LogViewer.basePath = window.location.host;
-}
+window.LogViewer.basePath = isRoot ? '' : '/' + routePath;
 
-let routerBasePath = window.LogViewer.basePath + '/';
-
-if (window.LogViewer.path === '' || window.LogViewer.path === '/') {
-  routerBasePath = '/';
-  window.LogViewer.basePath = '';
-}
+const routerBase = isRoot ? '/' : '/' + routePath + '/';
 
 const router = createRouter({
   routes: [{
-    path: window.LogViewer.basePath,
+    path: '/',
     name: 'home',
     component: Home,
   }],
-  history: createWebHistory(),
-  base: routerBasePath,
+  history: createWebHistory(routerBase),
 });
 const pinia = createPinia();
 

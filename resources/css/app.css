@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import './app.scss';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -8,4 +9,32 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+@theme inline {
+    /* brand = sky */
+    --color-brand-50: var(--color-sky-50);
+    --color-brand-100: var(--color-sky-100);
+    --color-brand-200: var(--color-sky-200);
+    --color-brand-300: var(--color-sky-300);
+    --color-brand-400: var(--color-sky-400);
+    --color-brand-500: var(--color-sky-500);
+    --color-brand-600: var(--color-sky-600);
+    --color-brand-700: var(--color-sky-700);
+    --color-brand-800: var(--color-sky-800);
+    --color-brand-900: var(--color-sky-900);
+    --color-brand-950: var(--color-sky-950);
+
+    /* gray = zinc */
+    --color-gray-50: var(--color-zinc-50);
+    --color-gray-100: var(--color-zinc-100);
+    --color-gray-200: var(--color-zinc-200);
+    --color-gray-300: var(--color-zinc-300);
+    --color-gray-400: var(--color-zinc-400);
+    --color-gray-500: var(--color-zinc-500);
+    --color-gray-600: var(--color-zinc-600);
+    --color-gray-700: var(--color-zinc-700);
+    --color-gray-800: var(--color-zinc-800);
+    --color-gray-900: var(--color-zinc-900);
+    --color-gray-950: var(--color-zinc-950);
 }

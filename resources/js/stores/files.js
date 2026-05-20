@@ -155,7 +155,7 @@ export const useFileStore = defineStore({
 
       this.abortController = new AbortController();
       this.loading = true;
-
+      console.log(LogViewer.basePath);
       // load the folders from the server
       return axios.get(`${LogViewer.basePath}/api/folders`, {
           params: {
