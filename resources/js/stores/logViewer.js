@@ -8,6 +8,7 @@ import { useSeverityStore } from './severity.js';
 import { useLocalStorage } from '@vueuse/core';
 import { debounce } from 'lodash';
 import { useHostStore } from './hosts.js';
+import { useFiltersStore } from './filters.js';
 
 export const Theme = {
   System: 'System',
@@ -201,6 +202,7 @@ export const useLogViewerStore = defineStore({
       const searchStore = useSearchStore();
       const paginationStore = usePaginationStore();
       const severityStore = useSeverityStore();
+      const filtersStore = useFiltersStore();
 
       // abort if the files are not ready yet
       if (fileStore.folders.length === 0) return;
@@ -226,6 +228,20 @@ export const useLogViewerStore = defineStore({
         exclude_file_types: toRaw(fileStore.fileTypesExcluded),
         shorter_stack_traces: this.shorterStackTraces,
       };
+
+      // Add filter parameters
+      if (filtersStore.dateTimeFrom) {
+        params.datetime_from = filtersStore.dateTimeFrom;
+      }
+      if (filtersStore.dateTimeTo) {
+        params.datetime_to = filtersStore.dateTimeTo;
+      }
+      if (filtersStore.excludedMethods.length > 0) {
+        params.exclude_methods = toRaw(filtersStore.excludedMethods);
+      }
+      if (filtersStore.excludedStatusCodes.length > 0) {
+        params.exclude_status_codes = toRaw(filtersStore.excludedStatusCodes);
+      }
 
       if (!silently) {
         this.loading = true;

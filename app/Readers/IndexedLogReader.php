@@ -218,19 +218,29 @@ class IndexedLogReader extends BaseLogReader implements LogReaderInterface
     {
         $this->prepareFileForReading();
 
-        [$index, $position] = $this->index()->next();
+        while (true) {
+            [$index, $position] = $this->index()->next();
 
-        if (is_null($index)) {
-            return null;
+            if (is_null($index)) {
+                return null;
+            }
+
+            $text = $this->getLogTextAtPosition($position);
+
+            if (empty($text)) {
+                return null;
+            }
+
+            $log = $this->makeLog($text, $position, $index);
+
+            // Apply method and status code filters if set
+            if (method_exists($this, 'shouldFilterLog') && $this->shouldFilterLog($log)) {
+                // Skip this log and continue to the next one
+                continue;
+            }
+
+            return $log;
         }
-
-        $text = $this->getLogTextAtPosition($position);
-
-        if (empty($text)) {
-            return null;
-        }
-
-        return $this->makeLog($text, $position, $index);
     }
 
     public function total(): int

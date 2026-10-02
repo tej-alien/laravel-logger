@@ -8,6 +8,8 @@ trait CanFilterUsingIndex
 {
     protected ?string $query = null;
     protected ?int $onlyShowIndex = null;
+    protected ?array $excludedMethods = null;
+    protected ?array $excludedStatusCodes = null;
 
     /**
      * Load only the provided log levels
@@ -100,5 +102,64 @@ trait CanFilterUsingIndex
         }
 
         return $this;
+    }
+
+    /**
+     * Exclude specific request methods from results.
+     *
+     * @param array|null $methods
+     */
+    public function exceptMethods(?array $methods = null): static
+    {
+        $this->excludedMethods = $methods;
+
+        return $this;
+    }
+
+    /**
+     * Exclude specific status codes from results.
+     *
+     * @param array|null $statusCodes
+     */
+    public function exceptStatusCodes(?array $statusCodes = null): static
+    {
+        $this->excludedStatusCodes = $statusCodes;
+
+        return $this;
+    }
+
+    /**
+     * Apply datetime range filter to the index.
+     *
+     * @param \Carbon\CarbonInterface|string|null $from
+     * @param \Carbon\CarbonInterface|string|null $to
+     */
+    public function forDateRange($from = null, $to = null): static
+    {
+        $this->index()->forDateRange($from, $to);
+
+        return $this;
+    }
+
+    /**
+     * Check if a log should be filtered out based on method and status code filters.
+     */
+    protected function shouldFilterLog($log): bool
+    {
+        // Filter by request method
+        if (!empty($this->excludedMethods) && isset($log->context['method'])) {
+            if (in_array($log->context['method'], $this->excludedMethods)) {
+                return true;
+            }
+        }
+
+        // Filter by status code
+        if (!empty($this->excludedStatusCodes) && isset($log->context['status_code'])) {
+            if (in_array($log->context['status_code'], $this->excludedStatusCodes)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

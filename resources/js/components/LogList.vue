@@ -7,7 +7,10 @@
         </div>
         <div class="w-full lg:w-auto flex-1 flex justify-end min-h-[38px]">
           <SearchInput />
-          <div class="hidden md:block ml-5">
+          <div class="hidden md:block ml-2">
+            <FilterPanel />
+          </div>
+          <div class="hidden md:block ml-2">
             <button @click="logViewerStore.loadLogs()" id="reload-logs-button" title="Reload current results" class="menu-button">
               <ArrowPathIcon class="w-5 h-5" />
             </button>
@@ -77,6 +80,7 @@ import { usePaginationStore } from '../stores/pagination.js';
 import Pagination from './Pagination.vue';
 import LevelButtons from './LevelButtons.vue';
 import SearchInput from './SearchInput.vue';
+import FilterPanel from './FilterPanel.vue';
 import SiteSettingsDropdown from './SiteSettingsDropdown.vue';
 import SpinnerIcon from './SpinnerIcon.vue';
 import BaseLogTable from './BaseLogTable.vue';

@@ -20,6 +20,10 @@ class MultipleLogReader
     protected ?string $query = null;
     protected string $direction;
     protected ?array $exceptLevels = null;
+    protected ?array $excludedMethods = null;
+    protected ?array $excludedStatusCodes = null;
+    protected $dateTimeFrom = null;
+    protected $dateTimeTo = null;
 
     public function __construct(mixed $files)
     {
@@ -90,6 +94,28 @@ class MultipleLogReader
     public function search(?string $query = null): self
     {
         $this->query = $query;
+
+        return $this;
+    }
+
+    public function exceptMethods(?array $methods = null): self
+    {
+        $this->excludedMethods = $methods;
+
+        return $this;
+    }
+
+    public function exceptStatusCodes(?array $statusCodes = null): self
+    {
+        $this->excludedStatusCodes = $statusCodes;
+
+        return $this;
+    }
+
+    public function forDateRange($from = null, $to = null): self
+    {
+        $this->dateTimeFrom = $from;
+        $this->dateTimeTo = $to;
 
         return $this;
     }
@@ -237,10 +263,25 @@ class MultipleLogReader
 
     protected function getLogQueryForFile(LogFile $file): LogReaderInterface
     {
-        return $file->logs()
+        $logQuery = $file->logs()
             ->search($this->query)
             ->setDirection($this->direction)
             ->exceptLevels($this->exceptLevels)
             ->lazyScanning();
+
+        // Apply additional filters if set
+        if ($this->dateTimeFrom !== null || $this->dateTimeTo !== null) {
+            $logQuery->forDateRange($this->dateTimeFrom, $this->dateTimeTo);
+        }
+
+        if ($this->excludedMethods !== null) {
+            $logQuery->exceptMethods($this->excludedMethods);
+        }
+
+        if ($this->excludedStatusCodes !== null) {
+            $logQuery->exceptStatusCodes($this->excludedStatusCodes);
+        }
+
+        return $logQuery;
     }
 }

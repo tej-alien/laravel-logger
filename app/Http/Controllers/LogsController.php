@@ -24,6 +24,10 @@ class LogsController
         $log = $request->query('log', null);
         $excludedLevels = $request->query('exclude_levels', []);
         $excludedFileTypes = $request->query('exclude_file_types', []);
+        $excludedMethods = $request->query('exclude_methods', []);
+        $excludedStatusCodes = $request->query('exclude_status_codes', []);
+        $dateTimeFrom = $request->query('datetime_from', null);
+        $dateTimeTo = $request->query('datetime_to', null);
         $perPage = $request->query('per_page', 25);
         session()->put('log-viewer:shorter-stack-traces', $request->boolean('shorter_stack_traces', false));
         $hasMoreResults = false;
@@ -60,6 +64,22 @@ class LogsController
 
                 if ($direction === self::NEWEST_FIRST) {
                     $logQuery->reverse();
+                }
+
+                // Apply datetime filters if provided
+                if ($dateTimeFrom || $dateTimeTo) {
+                    $from = $dateTimeFrom ? \Carbon\Carbon::parse($dateTimeFrom) : null;
+                    $to = $dateTimeTo ? \Carbon\Carbon::parse($dateTimeTo) : null;
+                    $logQuery->forDateRange($from, $to);
+                }
+
+                // Apply request method and status code filters if provided
+                if (!empty($excludedMethods)) {
+                    $logQuery->exceptMethods($excludedMethods);
+                }
+
+                if (!empty($excludedStatusCodes)) {
+                    $logQuery->exceptStatusCodes($excludedStatusCodes);
                 }
 
                 $logQuery->scan();
