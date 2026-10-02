@@ -1,59 +1,227 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Log Viewer
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel-based log viewer application with Vue.js frontend for viewing and analyzing application logs.
 
-## About Laravel
+## Requirements
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- PHP 8.2 or higher
+- Composer
+- Node.js 18+ and npm
+- MySQL/PostgreSQL/SQLite database
+- Web server (Apache/Nginx) or use Laravel's built-in server
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Installation
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 1. Clone the Repository
 
-## Learning Laravel
+```bash
+git clone https://github.com/opcodesio/log-viewer.git
+cd logviewer
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 2. Quick Setup (Recommended)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Run the automated setup script:
 
-## Laravel Sponsors
+```bash
+composer setup
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+This will:
+- Install PHP dependencies
+- Copy `.env.example` to `.env`
+- Generate application key
+- Run database migrations
+- Install npm dependencies
+- Build frontend assets
 
-### Premium Partners
+### 3. Manual Setup (Alternative)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+If you prefer to set up manually:
 
-## Contributing
+```bash
+# Install PHP dependencies
+composer install
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# Copy environment file
+cp .env.example .env
 
-## Code of Conduct
+# Generate application key
+php artisan key:generate
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# Configure your database in .env file
+# Then run migrations
+php artisan migrate
 
-## Security Vulnerabilities
+# Install JavaScript dependencies
+npm install
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# Build frontend assets
+npm run build
+```
+
+## Configuration
+
+### Database Setup
+
+Edit `.env` file and configure your database connection:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=logviewer
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+For SQLite (simpler option):
+
+```env
+DB_CONNECTION=sqlite
+DB_DATABASE=/absolute/path/to/database.sqlite
+```
+
+### Application Settings
+
+Update other environment variables as needed:
+
+```env
+APP_NAME="Log Viewer"
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://localhost:8000
+```
+
+## Running the Application
+
+### Development Mode
+
+Run the development server with hot reload:
+
+```bash
+composer dev
+```
+
+This starts:
+- Laravel development server (http://localhost:8000)
+- Queue worker
+- Log viewer (Pail)
+- Vite dev server with HMR
+
+Alternatively, run services individually:
+
+```bash
+# Terminal 1: Laravel server
+php artisan serve
+
+# Terminal 2: Frontend dev server with hot reload
+npm run dev
+
+# Terminal 3 (optional): Queue worker
+php artisan queue:listen
+
+# Terminal 4 (optional): View logs
+php artisan pail
+```
+
+### Production Mode
+
+Build frontend assets for production:
+
+```bash
+npm run build
+```
+
+Configure your web server to point to the `public` directory.
+
+## Testing
+
+Run the test suite:
+
+```bash
+composer test
+```
+
+Or directly:
+
+```bash
+php artisan test
+```
+
+## Development
+
+### Code Style
+
+Format code using Laravel Pint:
+
+```bash
+./vendor/bin/pint
+```
+
+### Frontend Development
+
+The application uses:
+- Vue 3 with Composition API
+- Pinia for state management
+- Tailwind CSS 4.0 for styling
+- Vite for bundling
+
+Frontend files are located in:
+- `resources/js/` - Vue components and stores
+- `resources/views/` - Blade templates
+
+### Backend Development
+
+Key directories:
+- `app/Http/Controllers/` - Controllers
+- `app/Readers/` - Log reader implementations
+- `routes/` - Application routes
+- `database/migrations/` - Database migrations
+
+## Troubleshooting
+
+### Permission Issues
+
+Ensure storage and cache directories are writable:
+
+```bash
+chmod -R 775 storage bootstrap/cache
+```
+
+### Frontend Build Issues
+
+Clear npm cache and reinstall:
+
+```bash
+rm -rf node_modules package-lock.json
+npm install
+npm run build
+```
+
+### Database Issues
+
+Reset database and run fresh migrations:
+
+```bash
+php artisan migrate:fresh
+```
+
+### Cache Issues
+
+Clear application cache:
+
+```bash
+php artisan cache:clear
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+```
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Credits
+
+Based on [opcodesio/log-viewer](https://github.com/opcodesio/log-viewer)
